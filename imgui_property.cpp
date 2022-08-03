@@ -8,25 +8,18 @@
 //==================================================
 // インクルード
 //==================================================
-//------------------------------
-//imgui
-//------------------------------
 #include "imgui_impl_dx9.h"
 #include "imgui_impl_win32.h"
 #include "imgui_property.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui_internal.h"
-//#include <cmath>
 
 #include "main.h"
 #include "application.h"
 #include "texture.h"
-
-#include <fstream>
-
-//==================================================
-// マクロ定義
-//==================================================
+#include "object.h"
+#include "effect.h"
+#include "effect_manager.h"
 
 //==================================================
 // 定義
@@ -150,18 +143,37 @@ void CImguiProperty::Update()
 
 	// ウインドウの起動時の場所
 	ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_Once);
-	ImGui::SetNextWindowSize(ImVec2(650, 400), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(350, 300), ImGuiCond_Once);
 
 	// ウインドウの命名
 	ImGui::Begin(WINDOW_NAME, nullptr, ImGuiWindowFlags_MenuBar);
 
 	// FPSの表示
 	ImGui::Text("FPS  : %.2f", ImGui::GetIO().Framerate);
+
+	// オブジェクトの総数の表示
+	ImGui::Text("Object  : %5d", CObject::GetNumAll());
+
+	// エフェクトの総数の表示
+	ImGui::Text("Effect  : %5d", CEffect::GetNumAll());
 	ImGui::Separator();	// 区切り線
 
 	ImGui::Checkbox("instancing", &m_instancing);
-	ImGui::SameLine();
+	ImGui::Separator();	// 区切り線
 
+	CEffectManager* pEffect = CEffectManager::GetInstanse();
+
+	{// 間隔
+		int interval = pEffect->GetInterval();
+		ImGui::DragInt("interval", &interval, 0.5f, CEffectManager::MIN_INTERVAL, CEffectManager::MAX_INTERVAL);
+		pEffect->SetInterval(interval);
+	}
+
+	{// 量
+		int quantity = pEffect->GetQuantity();
+		ImGui::DragInt("quantity", &quantity, 10.0f, CEffectManager::MIN_QUANTITY, CObject::MAX_OBJECT);
+		pEffect->SetQuantity(quantity);
+	}
 
 	ImGui::End();
 

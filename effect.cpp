@@ -39,7 +39,7 @@ CEffect* CEffect::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const 
 	CEffect* pEffect = nullptr;
 
 	pEffect = new CEffect;
-	
+
 	if (pEffect != nullptr)
 	{// nullチェック
 		pEffect->Init();
@@ -112,7 +112,7 @@ void CEffect::Update()
 	m_life--;
 
 	if (m_life <= 0)
-	{
+	{// 寿命が無くなった
 		CObject::Release();
 		return;
 	}
