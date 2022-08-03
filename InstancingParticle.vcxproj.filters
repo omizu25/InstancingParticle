@@ -13,5 +13,150 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{e0c50492-e3ab-43a3-b131-767dd7248514}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{7f3058b5-862f-4b29-b95f-97f1948e28b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{9ba49ee1-f611-459f-9a1c-4f18a01b6b5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Input">
+      <UniqueIdentifier>{86ed576e-8750-4ec6-8e1c-d5551c861996}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="imgui\imgui.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_demo.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_draw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_dx9.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_win32.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_tables.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_widgets.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="application.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="utility.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_property.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="effect.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="instancing.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="object3D.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>System\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="input_keyboard.cpp">
+      <Filter>System\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="effect_manager.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="imgui\imconfig.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_dx9.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_win32.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_internal.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_rectpack.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_textedit.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_truetype.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="application.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="effect.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_property.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="instancing.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="object3D.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="utility.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>System\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="input_keyboard.h">
+      <Filter>System\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="effect_manager.h">
+      <Filter>Object</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
