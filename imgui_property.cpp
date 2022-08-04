@@ -175,6 +175,40 @@ void CImguiProperty::Update()
 		pEffect->SetQuantity(quantity);
 	}
 
+	{// 幅
+		float width = pEffect->GetWidth();
+		ImGui::DragFloat("width", &width, 5.0f, CEffectManager::MIN_WIDTH, CEffectManager::MAX_WIDTH);
+		pEffect->SetWidth(width);
+	}
+
+	{// 高さ
+		float height = pEffect->GetHeight();
+		ImGui::DragFloat("height", &height, 5.0f, CEffectManager::MIN_HEIGHT, CEffectManager::MAX_HEIGHT);
+		pEffect->SetHeight(height);
+	}
+
+	{// 移動量
+		float minMove = pEffect->GetMinMove();
+		float maxMove = pEffect->GetMaxMove();
+
+		ImGui::DragFloat("minMove", &minMove, 5.0f, CEffectManager::MIN_MOVE, CEffectManager::MAX_MOVE);
+		
+		if (minMove > maxMove)
+		{// 指定の値より大きい
+			maxMove = minMove;
+		}
+
+		ImGui::DragFloat("maxMove", &maxMove, 5.0f, CEffectManager::MIN_MOVE, CEffectManager::MAX_MOVE);
+
+		if (maxMove < minMove)
+		{// 指定の値より小さい
+			minMove = maxMove;
+		}
+		
+		pEffect->SetMinMove(minMove);
+		pEffect->SetMaxMove(maxMove);
+	}
+
 	ImGui::End();
 
 #endif // _DEBUG
