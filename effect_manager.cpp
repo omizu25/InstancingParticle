@@ -20,6 +20,8 @@ const int CEffectManager::MIN_INTERVAL = 1;
 const int CEffectManager::STD_INTERVAL = 5;
 const int CEffectManager::MAX_INTERVAL = 120;
 const int CEffectManager::MIN_QUANTITY = 0;
+const int CEffectManager::MIN_CHANGE_TIMING = 1;
+const int CEffectManager::MAX_CHANGE_TIMING = 120;
 const int CEffectManager::STD_QUANTITY = 300;
 const float CEffectManager::MIN_WIDTH = 0.0f;
 const float CEffectManager::MAX_WIDTH = 600.0f;
@@ -52,13 +54,16 @@ CEffectManager* CEffectManager::GetInstanse()
 // デフォルトコンストラクタ
 //--------------------------------------------------
 CEffectManager::CEffectManager() : 
+	m_col(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)),
 	m_time(0),
+	m_changeTiming(0),
 	m_interval(0),
 	m_quantity(0),
 	m_width(0.0f),
 	m_height(0.0f),
 	m_minMove(0.0f),
-	m_maxMove(0.0f)
+	m_maxMove(0.0f),
+	m_colRandom(false)
 {
 }
 
@@ -74,13 +79,16 @@ CEffectManager::~CEffectManager()
 //--------------------------------------------------
 void CEffectManager::Reset()
 {
+	m_col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	m_time = 0;
+	m_changeTiming = MIN_CHANGE_TIMING;
 	m_interval = STD_INTERVAL;
 	m_quantity = STD_QUANTITY;
 	m_width = MAX_WIDTH;
 	m_height = MAX_HEIGHT;
 	m_minMove = MIN_MOVE;
 	m_maxMove = STD_MOVE;
+	m_colRandom = true;
 }
 
 //--------------------------------------------------
@@ -100,11 +108,15 @@ void CEffectManager::ParticleCreate()
 	pos.x = FloatRandam(m_width, -m_width);
 	pos.y = FloatRandam(m_height, -m_height);
 
-	D3DXCOLOR col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	col.r = FloatRandam(1.0f, 0.0f);
-	col.g = FloatRandam(1.0f, 0.0f);
-	col.b = FloatRandam(1.0f, 0.0f);
+	if (m_colRandom && ((m_time % m_changeTiming) == 0))
+	{// ランダムする
+		m_col.r = FloatRandam(1.0f, 0.0f);
+		m_col.g = FloatRandam(1.0f, 0.0f);
+		m_col.b = FloatRandam(1.0f, 0.0f);
+	}
 
+	D3DXCOLOR col = m_col;
+	
 	// パーティクル
 	Particle(pos, col);
 }
@@ -123,6 +135,22 @@ void CEffectManager::SetInterval(const int interval)
 const int CEffectManager::GetInterval() const
 {
 	return m_interval;
+}
+
+//--------------------------------------------------
+// 変更のタイミングの設定
+//--------------------------------------------------
+void CEffectManager::SetChangeTiming(const int timing)
+{
+	m_changeTiming = timing;
+}
+
+//--------------------------------------------------
+// 変更のタイミングの取得
+//--------------------------------------------------
+const int CEffectManager::GetChangeTiming() const
+{
+	return m_changeTiming;
 }
 
 //--------------------------------------------------
@@ -203,6 +231,38 @@ void CEffectManager::SetMaxMove(const float move)
 const float CEffectManager::GetMaxMove() const
 {
 	return m_maxMove;
+}
+
+//--------------------------------------------------
+// 色のランダムするかどうかの設定
+//--------------------------------------------------
+void CEffectManager::SetColRandom(const bool random)
+{
+	m_colRandom = random;
+}
+
+//--------------------------------------------------
+// 色のランダムするかどうかの取得
+//--------------------------------------------------
+const bool CEffectManager::GetColRandom() const
+{
+	return m_colRandom;
+}
+
+//--------------------------------------------------
+// 色の設定
+//--------------------------------------------------
+void CEffectManager::SetCol(const D3DXCOLOR& col)
+{
+	m_col = col;
+}
+
+//--------------------------------------------------
+// 色の取得
+//--------------------------------------------------
+const D3DXCOLOR& CEffectManager::GetCol() const
+{
+	return m_col;
 }
 
 //--------------------------------------------------

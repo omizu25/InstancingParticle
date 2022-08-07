@@ -25,6 +25,9 @@
     <Filter Include="System\Input">
       <UniqueIdentifier>{86ed576e-8750-4ec6-8e1c-d5551c861996}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shader">
+      <UniqueIdentifier>{38d7a77d-fbd9-495b-9f8e-815a5d363a94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -158,5 +161,10 @@
     <ClInclude Include="effect_manager.h">
       <Filter>Object</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="data\TEXT\Effect.fx">
+      <Filter>shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

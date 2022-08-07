@@ -143,7 +143,7 @@ void CImguiProperty::Update()
 
 	// ウインドウの起動時の場所
 	ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_Once);
-	ImGui::SetNextWindowSize(ImVec2(350, 300), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(350, 400), ImGuiCond_Once);
 
 	// ウインドウの命名
 	ImGui::Begin(WINDOW_NAME, nullptr, ImGuiWindowFlags_MenuBar);
@@ -207,6 +207,28 @@ void CImguiProperty::Update()
 		
 		pEffect->SetMinMove(minMove);
 		pEffect->SetMaxMove(maxMove);
+	}
+
+	{// 色のランダムするかどうか
+		if (ImGui::CollapsingHeader("Color"))
+		{
+			bool random = pEffect->GetColRandom();
+			ImGui::Checkbox("random", &random);
+			pEffect->SetColRandom(random);
+
+			if (random)
+			{// ランダムする
+				int timing = pEffect->GetChangeTiming();
+				ImGui::DragInt("timing", &timing, 1.0f, CEffectManager::MIN_CHANGE_TIMING, CEffectManager::MAX_CHANGE_TIMING);
+				pEffect->SetChangeTiming(timing);
+			}
+			else
+			{// ランダムしない
+				D3DXCOLOR col = pEffect->GetCol();
+				ColorPalette4("color", (float*)&col);
+				pEffect->SetCol(col);
+			}
+		}
 	}
 
 	ImGui::End();
