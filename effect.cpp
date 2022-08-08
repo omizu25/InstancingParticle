@@ -18,13 +18,18 @@
 // 定義
 //==================================================
 const int CEffect::MAX_LIFE = 100;
-const float CEffect::STD_WIDTH = 24.0f;
-const float CEffect::STD_HEIGHT = 60.0f;
+const float CEffect::MAX_WIDTH = 100.0f;
+const float CEffect::MIN_WIDTH = 1.0f;
+const float CEffect::STD_WIDTH = 12.0f;
+const float CEffect::MAX_HEIGHT = 100.0f;
+const float CEffect::MIN_HEIGHT = 1.0f;
+const float CEffect::STD_HEIGHT = 30.0f;
 
 //==================================================
 // 静的メンバ変数
 //==================================================
 int CEffect::m_numAll = 0;
+D3DXVECTOR2 CEffect::m_scale = D3DXVECTOR2(STD_WIDTH, STD_HEIGHT);
 
 //--------------------------------------------------
 // 生成
@@ -60,6 +65,22 @@ int CEffect::GetNumAll()
 }
 
 //--------------------------------------------------
+// スケールの設定
+//--------------------------------------------------
+void CEffect::SetScale(const D3DXVECTOR2& scale)
+{
+	m_scale = scale;
+}
+
+//--------------------------------------------------
+// スケールの取得
+//--------------------------------------------------
+const D3DXVECTOR2& CEffect::GetScale()
+{
+	return m_scale;
+}
+
+//--------------------------------------------------
 // デフォルトコンストラクタ
 //--------------------------------------------------
 CEffect::CEffect() :
@@ -89,7 +110,7 @@ void CEffect::Init()
 	CObject3D::Init();
 
 	// サイズの設定
-	CObject3D::SetSize(D3DXVECTOR3(STD_WIDTH, STD_HEIGHT, 0.0f));
+	CObject3D::SetSize(D3DXVECTOR3(m_scale.x, m_scale.y, 0.0f));
 
 	// テクスチャの設定
 	CObject3D::SetTexture(CTexture::LABEL_Effect);

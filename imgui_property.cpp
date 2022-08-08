@@ -161,6 +161,13 @@ void CImguiProperty::Update()
 	ImGui::Checkbox("instancing", &m_instancing);
 	ImGui::Separator();	// ãÊêÿÇËê¸
 
+	{// ÉTÉCÉY
+		D3DXVECTOR2 scale = CEffect::GetScale();
+		ImGui::DragFloat("scale.x", &scale.x, 0.1f, CEffect::MIN_WIDTH, CEffect::MAX_WIDTH);
+		ImGui::DragFloat("scale.y", &scale.y, 0.1f, CEffect::MIN_HEIGHT, CEffect::MAX_HEIGHT);
+		CEffect::SetScale(scale);
+	}
+
 	CEffectManager* pEffect = CEffectManager::GetInstanse();
 
 	{// ä‘äu
