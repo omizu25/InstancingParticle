@@ -1,6 +1,6 @@
 //**************************************************
 // 
-// renderer.cpp
+// window.cpp
 // Author  : katsuki mizuki
 // 
 //**************************************************
@@ -8,28 +8,28 @@
 //==================================================
 // インクルード
 //==================================================
+#include "window.h"
 #include "renderer.h"
-#include "main.h"
 #include "application.h"
-#include "object.h"
 #include "camera.h"
-#include "effect_manager.h"
-#include "instancing.h"
-#include "utility.h"
+#include "main.h"
 #include "imgui_property.h"
 #include <assert.h>
-#include <tchar.h> // _T
 
 //==================================================
-// ライブラリーリンク
+// 定義
 //==================================================
-#pragma comment(lib,"d3d9.lib")
-#pragma comment(lib,"d3dx9.lib")
+namespace
+{
+const LPCTSTR CHILD_NAME = _T("Child");	// 子ウインドウのキャプション名
+static const int CHILD_WIDTH = 420;		// 子ウインドウの幅
+static const int CHILD_HEIGHT = 720;	// 子ウインドウの高さ
+}
 
 //--------------------------------------------------
 // デフォルトコンストラクタ
 //--------------------------------------------------
-CRenderer::CRenderer() : 
+CWindow::CWindow() :
 	m_pD3D(nullptr),
 	m_pD3DDevice(nullptr)
 {
@@ -38,7 +38,7 @@ CRenderer::CRenderer() :
 //--------------------------------------------------
 // デストラクタ
 //--------------------------------------------------
-CRenderer::~CRenderer()
+CWindow::~CWindow()
 {
 	assert(m_pD3D == nullptr);
 	assert(m_pD3DDevice == nullptr);
@@ -47,8 +47,31 @@ CRenderer::~CRenderer()
 //--------------------------------------------------
 // 初期化
 //--------------------------------------------------
-HRESULT CRenderer::Init(HWND hWnd, bool bWindow)
+HRESULT CWindow::Init(HINSTANCE hInstance)
 {
+	RECT rect = { 0, 0, CHILD_WIDTH, CHILD_HEIGHT };
+
+	// 指定したクライアント領域を確保するために必要なウィンドウ座標を計算
+	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
+
+	// ウィンドウの作成
+	m_hWnd = CreateWindow(
+		CLASS_NAME,
+		CHILD_NAME,
+		WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT,
+		CW_USEDEFAULT,
+		(rect.right - rect.left),
+		(rect.bottom - rect.top),
+		NULL,
+		NULL,
+		hInstance,
+		NULL);
+
+	// ウインドウの表示
+	ShowWindow(m_hWnd, SW_RESTORE);
+	UpdateWindow(m_hWnd);
+
 	D3DPRESENT_PARAMETERS d3dpp;
 	D3DDISPLAYMODE d3ddm;
 
@@ -56,7 +79,7 @@ HRESULT CRenderer::Init(HWND hWnd, bool bWindow)
 	m_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
 
 	if (m_pD3D == nullptr)
-	{
+	{// nullチェック
 		// 生成失敗
 		return E_FAIL;
 	}
@@ -69,35 +92,35 @@ HRESULT CRenderer::Init(HWND hWnd, bool bWindow)
 	// デバイスのプレゼンテーションパラメータの設定
 	ZeroMemory(&d3dpp, sizeof(d3dpp));							// ワークをゼロクリア
 	d3dpp.BackBufferCount = 1;									// バックバッファの数
-	d3dpp.BackBufferWidth = CApplication::SCREEN_WIDTH;			// ゲーム画面サイズ(幅)
-	d3dpp.BackBufferHeight = CApplication::SCREEN_HEIGHT;		// ゲーム画面サイズ(高さ)
+	d3dpp.BackBufferWidth = CHILD_WIDTH;						// ゲーム画面サイズ(幅)
+	d3dpp.BackBufferHeight = CHILD_HEIGHT;						// ゲーム画面サイズ(高さ)
 	d3dpp.BackBufferFormat = d3ddm.Format;						// カラーモードの指定
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;					// 映像信号に同期してフリップする
 	d3dpp.EnableAutoDepthStencil = TRUE;						// デプスバッファ（Ｚバッファ）とステンシルバッファを作成
 	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;					// デプスバッファとして16bitを使う
-	d3dpp.Windowed = bWindow;									// ウィンドウモード
+	d3dpp.Windowed = true;										// ウィンドウモード
 	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;	// リフレッシュレート
 	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;	// インターバル
 
 	// ディスプレイアダプタを表すためのデバイスを作成
 	// 描画と頂点処理をハードウェアで行なう
-	if ((FAILED(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &m_pD3DDevice))) &&
+	if ((FAILED(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &m_pD3DDevice))) &&
 		// 上記の設定が失敗したら
 		// 描画をハードウェアで行い、頂点処理はCPUで行なう
-		(FAILED(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &m_pD3DDevice))) &&
+		(FAILED(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &m_pD3DDevice))) &&
 		// 上記の設定が失敗したら
 		// 描画と頂点処理をCPUで行なう
-		(FAILED(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &m_pD3DDevice))))
+		(FAILED(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, m_hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &m_pD3DDevice))))
 	{// 生成失敗
 		return E_FAIL;
 	}
 
 	// レンダーステートの設定
-	m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+	m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 	m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	m_pD3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	m_pD3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	m_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+	m_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
 	// サンプラーステートの設定
 	m_pD3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);	// 画像を小さくしても綺麗にする
@@ -110,16 +133,13 @@ HRESULT CRenderer::Init(HWND hWnd, bool bWindow)
 	m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);	// １つ目の色はテクスチャの色
 	m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);	// ２つ目の色は現在の色
 
-	// ライトを無効にする
-	m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-
 	return S_OK;
 }
 
 //--------------------------------------------------
 // 終了
 //--------------------------------------------------
-void CRenderer::Uninit()
+void CWindow::Uninit()
 {
 	if (m_pD3DDevice != nullptr)
 	{// デバイスの破棄
@@ -132,32 +152,25 @@ void CRenderer::Uninit()
 		m_pD3D->Release();
 		m_pD3D = nullptr;
 	}
+
+	// ウィンドウを破棄
+	DestroyWindow(m_hWnd);
 }
 
 //--------------------------------------------------
 // 更新
 //--------------------------------------------------
-void CRenderer::Update()
+void CWindow::Update()
 {
-	// 更新
-	CApplication::GetInstanse()->GetImguiProperty()->Update();
-
-	// パーティクル生成
-	CEffectManager::GetInstanse()->ParticleCreate();
-	
-	// 更新
-	CObject::UpdateAll();
 }
 
 //--------------------------------------------------
 // 描画
 //--------------------------------------------------
-void CRenderer::Draw()
+void CWindow::Draw()
 {
 	// バックバッファ＆Ｚバッファのクリア
-	m_pD3DDevice->Clear(
-		0,
-		NULL,
+	m_pD3DDevice->Clear(0, NULL,
 		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
 		D3DCOLOR_RGBA(0, 0, 0, 0),
 		1.0f,
@@ -165,21 +178,11 @@ void CRenderer::Draw()
 
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{// Direct3Dによる描画の開始
-		// 設定
-		CApplication::GetInstanse()->GetCamera()->Set();
 
 		CImguiProperty* pImguiProperty = CApplication::GetInstanse()->GetImguiProperty();
 
-		if (pImguiProperty->GetInstancing())
-		{// インスタンシングを使用する
-			// 描画
-			CApplication::GetInstanse()->GetInstancing()->Draw();
-		}
-		else
-		{
-			// 描画
-			CObject::DrawAll();
-		}
+		// 描画
+		pImguiProperty->Draw();
 
 		// Direct3Dによる描画の終了
 		m_pD3DDevice->EndScene();
@@ -192,7 +195,15 @@ void CRenderer::Draw()
 //--------------------------------------------------
 // デバイスの取得
 //--------------------------------------------------
-LPDIRECT3DDEVICE9 CRenderer::GetDevice()
+LPDIRECT3DDEVICE9 CWindow::GetDevice()
 {
 	return m_pD3DDevice;
+}
+
+//--------------------------------------------------
+// ウインドウの取得
+//--------------------------------------------------
+HWND CWindow::GetWnd()
+{
+	return m_hWnd;
 }

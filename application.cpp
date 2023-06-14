@@ -18,6 +18,7 @@
 #include "effect.h"
 #include "instancing.h"
 #include "imgui_property.h"
+#include "window.h"
 #include <time.h>
 #include <assert.h>
 
@@ -53,7 +54,8 @@ CApplication::CApplication() :
 	m_pTexture(nullptr),
 	m_pCamera(nullptr),
 	m_pInstancing(nullptr),
-	m_pImguiProperty(nullptr)
+	m_pImguiProperty(nullptr),
+	m_pWindow(nullptr)
 {
 }
 
@@ -62,6 +64,7 @@ CApplication::CApplication() :
 //--------------------------------------------------
 CApplication::~CApplication()
 {
+	assert(m_pWindow == nullptr);
 	assert(m_pImguiProperty == nullptr);
 	assert(m_pInstancing == nullptr);
 	assert(m_pCamera == nullptr);
@@ -124,6 +127,16 @@ HRESULT CApplication::Init(HINSTANCE hInstance, HWND hWnd)
 		m_pInstancing = CInstancing::Create();
 	}
 
+	if (m_pWindow == nullptr)
+	{// nullチェック
+		m_pWindow = new CWindow;
+	}
+
+	if (m_pWindow != nullptr)
+	{// nullチェック
+		m_pWindow->Init(hInstance);
+	}
+
 	if (m_pImguiProperty == nullptr)
 	{// nullチェック
 		m_pImguiProperty = new CImguiProperty;
@@ -131,7 +144,7 @@ HRESULT CApplication::Init(HINSTANCE hInstance, HWND hWnd)
 
 	if (m_pImguiProperty != nullptr)
 	{// nullチェック
-		m_pImguiProperty->Init(hWnd, GetDevice());
+		m_pImguiProperty->Init(m_pWindow->GetWnd(), m_pWindow->GetDevice());
 	}
 
 	return S_OK;
@@ -140,16 +153,23 @@ HRESULT CApplication::Init(HINSTANCE hInstance, HWND hWnd)
 //--------------------------------------------------
 // 終了
 //--------------------------------------------------
-void CApplication::Uninit(HWND hWnd, WNDCLASSEX wcex)
+void CApplication::Uninit(WNDCLASSEX wcex)
 {
 	// 破棄
 	CObject::ReleaseAll();
 
 	if (m_pImguiProperty != nullptr)
 	{// nullチェック
-		m_pImguiProperty->Uninit(hWnd, wcex);
+		m_pImguiProperty->Uninit(m_pWindow->GetWnd(), wcex);
 		delete m_pImguiProperty;
 		m_pImguiProperty = nullptr;
+	}
+
+	if (m_pWindow != nullptr)
+	{// nullチェック
+		m_pWindow->Uninit();
+		delete m_pWindow;
+		m_pWindow = nullptr;
 	}
 
 	if (m_pInstancing != nullptr)
@@ -205,6 +225,12 @@ void CApplication::Update()
 		// 更新処理
 		m_pRenderer->Update();
 	}
+
+	if (m_pWindow != nullptr)
+	{// nullチェック
+		// 更新処理
+		m_pWindow->Update();
+	}
 }
 
 //--------------------------------------------------
@@ -216,6 +242,12 @@ void CApplication::Draw()
 	{// nullチェック
 		// 描画処理
 		m_pRenderer->Draw();
+	}
+
+	if (m_pWindow != nullptr)
+	{// nullチェック
+		// 描画処理
+		m_pWindow->Draw();
 	}
 }
 

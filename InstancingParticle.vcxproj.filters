@@ -93,6 +93,9 @@
     <ClCompile Include="effect_manager.cpp">
       <Filter>Object</Filter>
     </ClCompile>
+    <ClCompile Include="window.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -160,6 +163,9 @@
     </ClInclude>
     <ClInclude Include="effect_manager.h">
       <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="window.h">
+      <Filter>System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

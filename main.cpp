@@ -24,9 +24,6 @@
 //==================================================
 namespace
 {
-// ウインドウのクラス名
-LPCTSTR CLASS_NAME = _T("AppClass");
-
 // ウインドウのキャプション名
 LPCTSTR WINDOW_NAME = _T("ポリゴンの描画");
 }
@@ -154,7 +151,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpC
 	if (pApplication != nullptr)
 	{// nullチェック
 		// 終了処理
-		pApplication->Uninit(hWnd, wcex);
+		pApplication->Uninit(wcex);
 
 		delete pApplication;
 		pApplication = nullptr;

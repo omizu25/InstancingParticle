@@ -21,6 +21,7 @@ class CTexture;
 class CCamera;
 class CInstancing;
 class CImguiProperty;
+class CWindow;
 
 //==================================================
 // 定義
@@ -52,7 +53,7 @@ public:
 
 public:
 	HRESULT Init(HINSTANCE hInstance, HWND hWnd);	// 初期化
-	void Uninit(HWND hWnd, WNDCLASSEX wcex);		// 終了
+	void Uninit(WNDCLASSEX wcex);	// 終了
 	void Update();	// 更新
 	void Draw();	// 描画
 	LPDIRECT3DDEVICE9 GetDevice();		// デバイスの取得
@@ -69,6 +70,7 @@ private:
 	CCamera* m_pCamera;					// カメラの情報
 	CInstancing* m_pInstancing;			// インスタンシングの情報
 	CImguiProperty* m_pImguiProperty;	// imguiの情報
+	CWindow* m_pWindow;					// ウインドウの情報
 };
 
 #endif // !_APPLICATION_H_
